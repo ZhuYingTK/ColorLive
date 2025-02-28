@@ -32,9 +32,9 @@ public class BlockNode : MonoBehaviour
     //点击事件
     private void OnClick()
     {
-        if (_colorEntity == null)
+        if (_colorEntity == null || _colorEntity.data.status == eEntityStatus.Generating)
         {
-            if (GameManager.Instance.blackRes > BlackEntity.cost)
+            if (GameManager.Instance.blackRes >= BlackEntity.cost)
             {
                 _colorEntity = new BlackEntity(status:eEntityStatus.Stable);
                 GameManager.Instance.blackRes -= BlackEntity.cost;
@@ -51,7 +51,7 @@ public class BlockNode : MonoBehaviour
         switch (type)
         {
             case eColorType.Black:
-                _colorEntity = new BlackEntity(status: eEntityStatus.Generating, live);
+                _colorEntity = new BlackEntity(live,status: eEntityStatus.Generating);
                 _colorEntity.OnStartGenerate(this);
                 setLiveText();
                 break;

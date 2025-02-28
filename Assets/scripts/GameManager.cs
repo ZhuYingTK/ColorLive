@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -23,5 +24,8 @@ public class GameManager : MonoBehaviour
     public void Awake()
     {
         Instance = this;
+        blackNodeData = AssetDatabase.LoadAssetAtPath<NodeDataScriptableObject>("Assets/DataRes/BlackCell.asset");
     }
+
+    public static NodeDataScriptableObject blackNodeData { get; private set; }
 }
