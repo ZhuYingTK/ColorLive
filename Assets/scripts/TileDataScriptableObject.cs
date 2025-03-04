@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "创建细胞数据")]
-public class NodeDataScriptableObject : ScriptableObject
+public class TileDataScriptableObject : ScriptableObject
 {
-    public eColorType type;
+    public eCellType type;
     public float generateTime;
     public float productTime;
     public float dieTime;

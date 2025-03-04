@@ -24,8 +24,8 @@ public class GameManager : MonoBehaviour
     public void Awake()
     {
         Instance = this;
-        blackNodeData = AssetDatabase.LoadAssetAtPath<NodeDataScriptableObject>("Assets/DataRes/BlackCell.asset");
+        BlackTileData = AssetDatabase.LoadAssetAtPath<TileDataScriptableObject>("Assets/DataRes/BlackCell.asset");
     }
 
-    public static NodeDataScriptableObject blackNodeData { get; private set; }
+    public static TileDataScriptableObject BlackTileData { get; private set; }
 }

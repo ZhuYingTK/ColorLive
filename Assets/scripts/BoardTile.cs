@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BlockNode : MonoBehaviour
+public class BoardTile : MonoBehaviour
 {
     public ColorEntity _colorEntity;
     public TMP_Text liveText;
@@ -40,17 +40,17 @@ public class BlockNode : MonoBehaviour
                 GameManager.Instance.blackRes -= BlackEntity.cost;
                 liveText.text = _colorEntity.data.live.ToString();
                 setLiveText();
-                RefreshNodeView();
+                RefreshTileView();
             }
         }
     }
 
-    public void Generate(eColorType type,int live)
+    public void Generate(eCellType type,int live)
     {
         if(_colorEntity != null && _colorEntity.data.status == eEntityStatus.Generating) return;
         switch (type)
         {
-            case eColorType.Black:
+            case eCellType.Black:
                 _colorEntity = new BlackEntity(live,status: eEntityStatus.Generating);
                 _colorEntity.OnStartGenerate(this);
                 setLiveText();
@@ -92,11 +92,11 @@ public class BlockNode : MonoBehaviour
     public void EntityDead()
     {
         _colorEntity = null;
-        SetBody(eColorType.None);
-        RefreshNodeView();
+        SetBody(eCellType.None);
+        RefreshTileView();
     }
 
-    public void RefreshNodeView()
+    public void RefreshTileView()
     {
         if (_colorEntity == null)
         {
@@ -114,23 +114,23 @@ public class BlockNode : MonoBehaviour
         }
     }
 
-    public void SetBody(eColorType type)
+    public void SetBody(eCellType type)
     {
         switch (type)
         {
-            case eColorType.None:
+            case eCellType.None:
                 bodyImg.color = Color.white;
                 break;
-            case eColorType.Black:
+            case eCellType.Black:
                 bodyImg.color = Color.black;
                 break;
         }
     }
 
-    public eColorType GetColorType()
+    public eCellType GetColorType()
     {
         if (_colorEntity == null)
-            return eColorType.None;
+            return eCellType.None;
         else
             return _colorEntity.GetColorType();
     }

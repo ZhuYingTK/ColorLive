@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
-[CustomEditor(typeof(BlockManager))]
+[CustomEditor(typeof(BoardManager))]
 public class BlockManagerEditor : Editor
 {
     public override void OnInspectorGUI()
@@ -14,7 +14,7 @@ public class BlockManagerEditor : Editor
         base.OnInspectorGUI();
 
         // 获取目标脚本引用
-        BlockManager myScript = (BlockManager)target;
+        BoardManager myScript = (BoardManager)target;
 
         // 添加按钮
         if (GUILayout.Button("执行自定义方法"))
@@ -29,16 +29,16 @@ public class BlockManagerEditor : Editor
                 DestroyImmediate(myScript.content.GetChild(0).gameObject);
             }
 
-            myScript.nodes = new BlockNode[size.x, size.y];
+            myScript.tiles = new BoardTile[size.x, size.y];
             for (int i = 0; i < size.y; i++)
             {
                 for (int j = 0; j < size.x; j++)
                 {
-                    var obj = (GameObject)PrefabUtility.InstantiatePrefab(myScript.NodePrefab);
+                    var obj = (GameObject)PrefabUtility.InstantiatePrefab(myScript.BoardTilePrefab);
                     obj.transform.SetParent(myScript.content);
-                    var node = obj.GetComponent<BlockNode>();
+                    var node = obj.GetComponent<BoardTile>();
                     node.pos = new Vector2Int(j, i);
-                    myScript.nodes[j, i] = node;
+                    myScript.tiles[j, i] = node;
                 }
             }
         }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public enum eColorType
+public enum eCellType
 {
     None,
     Black
@@ -17,9 +17,9 @@ public enum eEntityStatus
     Dying
 }
 
-public class ColorData
+public class CellData
 {
-    public eColorType type;
+    public eCellType type;
     public eEntityStatus status;
     public float generateTime;
     public float productTime;
@@ -29,7 +29,7 @@ public class ColorData
 
 public abstract class ColorEntity
 {
-    public abstract ColorData data { get; set; }
+    public abstract CellData data { get; set; }
     private float currentGenerateTime = 0;
     private float currentproductTime = 0;
     private float currentdieTime = 0;
@@ -37,7 +37,7 @@ public abstract class ColorEntity
     public float productProgress => currentproductTime / data.productTime;
     public float dieProgress => currentdieTime / data.dieTime;
 
-    public virtual void OnUpdate(BlockNode node, float deltaTime)
+    public virtual void OnUpdate(BoardTile node, float deltaTime)
     {
         switch (data.status)
         {
@@ -54,7 +54,7 @@ public abstract class ColorEntity
         }
     }
 
-    protected virtual void AddGenerateTime(BlockNode node,float deltaTime)
+    protected virtual void AddGenerateTime(BoardTile node,float deltaTime)
     {
         currentGenerateTime += deltaTime;
         if (generateProgress >= 1)
@@ -65,7 +65,7 @@ public abstract class ColorEntity
         node.SetGenerateProgress(generateProgress);
     }
 
-    protected virtual void AddDyingTime(BlockNode node,float deltaTime)
+    protected virtual void AddDyingTime(BoardTile node,float deltaTime)
     {
         currentdieTime += deltaTime;
         if (dieProgress >= 1)
@@ -76,7 +76,7 @@ public abstract class ColorEntity
         node.SetDieProgress(dieProgress);
     }
     
-    protected virtual void AddProducingTime(BlockNode node,float deltaTime)
+    protected virtual void AddProducingTime(BoardTile node,float deltaTime)
     {
         currentproductTime += deltaTime;
         if (productProgress >= 1)
@@ -88,45 +88,45 @@ public abstract class ColorEntity
         node.SetProduceProgress(productProgress);
     }
 
-    public virtual void OnStopDie(BlockNode node)
+    public virtual void OnStopDie(BoardTile node)
     {
         data.status = eEntityStatus.Stable;
         currentdieTime = 0;
         node.SetDieProgress(dieProgress);
     }
     
-    public virtual void OnStartGenerate(BlockNode node)
+    public virtual void OnStartGenerate(BoardTile node)
     {
         data.status = eEntityStatus.Generating;
     }
 
-    public virtual void OnStopGenerate(BlockNode node)
+    public virtual void OnStopGenerate(BoardTile node)
     {
         node.EntityDead();
     }
 
-    public virtual void OnGenerate(BlockNode node)
+    public virtual void OnGenerate(BoardTile node)
     {
         data.status = eEntityStatus.Stable;
         node.SetBody(GetColorType());
     }
 
-    public virtual void OnStartDie(BlockNode node)
+    public virtual void OnStartDie(BoardTile node)
     {
         data.status = eEntityStatus.Dying;
     }
 
-    public virtual void OnDied(BlockNode node)
+    public virtual void OnDied(BoardTile node)
     {
         node.EntityDead();
     }
 
     public abstract void OnProduce();
 
-    public eColorType GetColorType()
+    public eCellType GetColorType()
     {
         if (data.status == eEntityStatus.Generating) 
-            return eColorType.None;
+            return eCellType.None;
         return data.type;
     }
 }
