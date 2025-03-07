@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BlackEntity : ColorEntity
+public class BlackEntity : CellEntity
 {
     public static int cost = 1;
     public override CellData data { get; set; }

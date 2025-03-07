@@ -14,12 +14,7 @@ public class BoardManager : MonoBehaviour
     
     public BoardTile[,] tiles;
 
-    public GridLayoutGroup GridLayoutGroup;
     public GameObject BoardTilePrefab;
-    public RectTransform content;
-    public Vector2Int size;
-    public int width => size.x;
-    public int height => size.y;
     public float refreshTime = 0.1f;
 
     private List<BoardTile> willDieCells = new List<BoardTile>();
@@ -27,18 +22,8 @@ public class BoardManager : MonoBehaviour
     public void Awake()
     {
         Instance = this;
-        Init();
     }
-
-    private void Init()
-    {
-        tiles = new BoardTile[width, height];
-        for (int i = 0; i < content.transform.childCount; i++)
-        {
-            BoardTile tile = content.transform.GetChild(i).GetComponent<BoardTile>();
-            tiles[tile.pos.x, tile.pos.y] = tile;
-        }
-    }
+    
 
     public void Update()
     {
@@ -50,25 +35,25 @@ public class BoardManager : MonoBehaviour
         willDieCells.Clear();
         foreach (BoardTile tile in tiles)
         {
-            switch (tile.GetColorType())
+            switch (tile.GetCellType())
             {
                 case eCellType.None:
                 {
                     var Neighbors = GetTileNeighbors(tile);
-                    var blackEntityCount = Neighbors.Count(e => e.GetColorType() == eCellType.Black);
+                    var blackEntityCount = Neighbors.Count(e => e.GetCellType() == eCellType.Black);
                     if (blackEntityCount == 3)
                     {
-                        List<int> liveList = Neighbors.Where(e => e.GetColorLive() != null).Select(e => e.GetColorLive().Value)
+                        List<int> liveList = Neighbors.Where(e => e.GetCellLive() != null).Select(e => e.GetCellLive().Value)
                             .ToList();
                         int live = liveList.Min() - 1;
                         if (live > 0)
                         {
-                            tile.Generate(eCellType.Black,live);
+                            tile.GenerateCell(eCellType.Black,live);
                         }
                     }
                     else
                     {
-                        if (tile.GetColorStatus() == eEntityStatus.Generating)
+                        if (tile.GetCellStatus() == eEntityStatus.Generating)
                         {
                             tile.StopGenerate();
                         }
@@ -78,12 +63,12 @@ public class BoardManager : MonoBehaviour
                 case eCellType.Black:
                 {
                     var Neighbors = GetTileNeighbors(tile);
-                    var blackEntityCount = Neighbors.Count(e => e.GetColorType() == eCellType.Black);
+                    var blackEntityCount = Neighbors.Count(e => e.GetCellType() == eCellType.Black);
                     if (blackEntityCount < 2 || blackEntityCount > 3)
                     {
                         willDieCells.Add(tile);
                     }
-                    else if(tile.GetColorStatus() == eEntityStatus.Dying)
+                    else if(tile.GetCellStatus() == eEntityStatus.Dying)
                     {
                         tile.StopDie();
                     }
@@ -107,17 +92,10 @@ public class BoardManager : MonoBehaviour
             {
                 if (i == 0 && j == 0) continue;
                 var pos = tile.pos + new Vector2Int(i, j);
-                if (PosInRange(pos))
-                {
-                    tileList.Add(tiles[pos.x,pos.y]);
-                }
+                tileList.Add(tiles[pos.x,pos.y]);
             }
         }
         return tileList;
     }
-
-    public bool PosInRange(Vector2Int pos)
-    {
-        return pos.x >= 0 && pos.x < width && pos.y >= 0 && pos.y < height;
-    }
+    
 }

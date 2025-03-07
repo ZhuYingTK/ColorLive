@@ -27,7 +27,7 @@ public class CellData
     public int live;
 }
 
-public abstract class ColorEntity
+public abstract class CellEntity : Entity
 {
     public abstract CellData data { get; set; }
     private float currentGenerateTime = 0;
@@ -37,7 +37,7 @@ public abstract class ColorEntity
     public float productProgress => currentproductTime / data.productTime;
     public float dieProgress => currentdieTime / data.dieTime;
 
-    public virtual void OnUpdate(BoardTile node, float deltaTime)
+    public override void OnUpdate(BoardTile node, float deltaTime)
     {
         switch (data.status)
         {
@@ -108,7 +108,7 @@ public abstract class ColorEntity
     public virtual void OnGenerate(BoardTile node)
     {
         data.status = eEntityStatus.Stable;
-        node.SetBody(GetColorType());
+        node.SetBody(GetCellType());
     }
 
     public virtual void OnStartDie(BoardTile node)
@@ -123,10 +123,15 @@ public abstract class ColorEntity
 
     public abstract void OnProduce();
 
-    public eCellType GetColorType()
+    public eCellType GetCellType()
     {
         if (data.status == eEntityStatus.Generating) 
             return eCellType.None;
         return data.type;
+    }
+
+    public virtual int? GetCellLive()
+    {
+        return data.status == eEntityStatus.Generating ? null : data.live;
     }
 }

@@ -5,155 +5,90 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BoardTile : MonoBehaviour
+public partial class BoardTile : MonoBehaviour,IClickable
 {
-    public ColorEntity _colorEntity;
-    public TMP_Text liveText;
-    public Image bodyImg;
-    public Image generateImg;
-    public Image produceImg;
-    public Image dieImg;
+    public CellEntity cellEntity;
     public Vector2Int pos;
-    public Button btn;
-    
-    public void Start()
-    {
-        btn.onClick.AddListener(OnClick);
-    }
 
     private void Update()
     {
-        if (_colorEntity != null)
+        if (cellEntity != null)
         {
-            _colorEntity.OnUpdate(this, Time.deltaTime);
+            cellEntity.OnUpdate(this, Time.deltaTime);
         }
     }
 
     //点击事件
-    private void OnClick()
+    public void OnClick()
     {
-        if (_colorEntity == null || _colorEntity.data.status == eEntityStatus.Generating)
+        if (cellEntity == null || cellEntity.data.status == eEntityStatus.Generating)
         {
             if (GameManager.Instance.blackRes >= BlackEntity.cost)
             {
-                _colorEntity = new BlackEntity(status:eEntityStatus.Stable);
+                cellEntity = new BlackEntity(status:eEntityStatus.Stable);
                 GameManager.Instance.blackRes -= BlackEntity.cost;
-                liveText.text = _colorEntity.data.live.ToString();
-                setLiveText();
+                liveText.text = cellEntity.data.live.ToString();
+                SetLiveText();
                 RefreshTileView();
             }
         }
     }
 
-    public void Generate(eCellType type,int live)
+    public void GenerateCell(eCellType type,int live)
     {
-        if(_colorEntity != null && _colorEntity.data.status == eEntityStatus.Generating) return;
+        if(cellEntity != null && cellEntity.data.status == eEntityStatus.Generating) return;
         switch (type)
         {
             case eCellType.Black:
-                _colorEntity = new BlackEntity(live,status: eEntityStatus.Generating);
-                _colorEntity.OnStartGenerate(this);
-                setLiveText();
+                cellEntity = new BlackEntity(live,status: eEntityStatus.Generating);
+                cellEntity.OnStartGenerate(this);
+                SetLiveText();
                 break;
         }
     }
 
     public void StartDie()
     {
-        _colorEntity.OnStartDie(this);
+        cellEntity.OnStartDie(this);
     }
 
     public void StopDie()
     {
-        _colorEntity.OnStopDie(this);
+        cellEntity.OnStopDie(this);
     }
 
     public void StopGenerate()
     {
-        _colorEntity.OnStopGenerate(this);
-    }
-
-    public void SetGenerateProgress(float progress)
-    {
-        generateImg.fillAmount = progress;
-        generateImg.gameObject.SetActive(progress != 1 && progress != 0);
-    }
-    public void SetProduceProgress(float progress)
-    {
-        produceImg.fillAmount = progress;
-        produceImg.gameObject.SetActive(true);
-    }
-    public void SetDieProgress(float progress)
-    {
-        dieImg.fillAmount = progress;
-        dieImg.gameObject.SetActive(progress != 1 && progress != 0);
+        cellEntity.OnStopGenerate(this);
     }
 
     public void EntityDead()
     {
-        _colorEntity = null;
+        cellEntity = null;
         SetBody(eCellType.None);
         RefreshTileView();
     }
 
-    public void RefreshTileView()
+    public eCellType GetCellType()
     {
-        if (_colorEntity == null)
-        {
-            liveText.gameObject.SetActive(false);
-            generateImg.gameObject.SetActive(false);
-            produceImg.gameObject.SetActive(false);
-            dieImg.gameObject.SetActive(false);
-        }
-        else
-        {
-            SetGenerateProgress(_colorEntity.generateProgress);
-            SetProduceProgress(_colorEntity.productProgress);
-            SetDieProgress(_colorEntity.dieProgress);
-            SetBody(_colorEntity.GetColorType());
-        }
-    }
-
-    public void SetBody(eCellType type)
-    {
-        switch (type)
-        {
-            case eCellType.None:
-                bodyImg.color = Color.white;
-                break;
-            case eCellType.Black:
-                bodyImg.color = Color.black;
-                break;
-        }
-    }
-
-    public eCellType GetColorType()
-    {
-        if (_colorEntity == null)
+        if (cellEntity == null)
             return eCellType.None;
         else
-            return _colorEntity.GetColorType();
+            return cellEntity.GetCellType();
     }
 
-    public eEntityStatus GetColorStatus()
+    public eEntityStatus GetCellStatus()
     {
-        if (_colorEntity == null)
+        if (cellEntity == null)
             return eEntityStatus.None;
         else
-            return _colorEntity.data.status;
+            return cellEntity.data.status;
     }
 
-    public int? GetColorLive()
+    public int? GetCellLive()
     {
-        if (_colorEntity == null || _colorEntity.data.status == eEntityStatus.Generating)
+        if (cellEntity == null)
             return null;
-        else
-            return _colorEntity.data.live;
-    }
-
-    private void setLiveText()
-    {
-        liveText.text = _colorEntity.data.live.ToString();
-        liveText.gameObject.SetActive(true);
+        return cellEntity.GetCellLive();
     }
 }

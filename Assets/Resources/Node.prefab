@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7039506936787987942
 RectTransform:
   m_ObjectHideFlags: 0
@@ -151,7 +151,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6566045560840232041
 RectTransform:
   m_ObjectHideFlags: 0
@@ -226,7 +226,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7412398199113629114
 RectTransform:
   m_ObjectHideFlags: 0
@@ -301,7 +301,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7738540318584215502
 RectTransform:
   m_ObjectHideFlags: 0
@@ -496,10 +496,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59ff2f239bda346498ccb5786dad59d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pos: {x: 0, y: 0}
   liveText: {fileID: 965399189810696037}
   bodyImg: {fileID: 5505150323643364640}
   generateImg: {fileID: 2542326860679107953}
   produceImg: {fileID: 6324445623058834828}
   dieImg: {fileID: 443981525454081972}
-  pos: {x: 0, y: 0}
-  btn: {fileID: 4796830189081454631}
