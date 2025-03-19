@@ -20,6 +20,11 @@ public class CameraManager : MonoBehaviour
         mainCamera = Camera.main;
     }
 
+    private void Start()
+    {
+        OnCameraMoving();
+    }
+
     void Update()
     {
         if (Input.GetMouseButtonDown(0) && !IsPointerOverUI())
@@ -64,12 +69,13 @@ public class CameraManager : MonoBehaviour
 
     private void OnCameraMoving()
     {
-        
+        var rect = GetOrthographicCameraRect(Camera.main);
+        BoardManager.Instance.RefreshChunk(rect);
     }
 
     private void OnCameraMoveDown()
     {
-        var rect = GetOrthographicCameraRect(Camera.main);
+        
     }
 
     private void OnClick()
@@ -91,22 +97,19 @@ public class CameraManager : MonoBehaviour
         {
             if (result.gameObject.layer.Equals("UI"))
             {
-                // 如果找到 Tag 为 MapUI 的 UI 元素，返回 false
                 return true;
             }
         }
-
-        // 如果没有找到 Tag 为 MapUI 的 UI 元素，返回 true
         return false;
     }
     
+    /// <summary>
+    /// 获得相机对应场景内矩形
+    /// </summary>
+    /// <param name="camera"></param>
+    /// <returns></returns>
     public static Rect GetOrthographicCameraRect(Camera camera)
     {
-        if (!camera.orthographic)
-        {
-            Debug.LogError("Camera is not orthographic!");
-            return new Rect();
-        }
 
         // 获取相机的正交尺寸
         float orthographicSize = camera.orthographicSize;
@@ -123,7 +126,6 @@ public class CameraManager : MonoBehaviour
 
         // 计算相机视口的四个角
         Vector3 bottomLeft = cameraPosition - new Vector3(width / 2, height / 2, 0);
-        Vector3 topRight = cameraPosition + new Vector3(width / 2, height / 2, 0);
 
         // 创建一个 Rect 来表示相机视口
         Rect cameraRect = new Rect(bottomLeft.x, bottomLeft.y, width, height);
