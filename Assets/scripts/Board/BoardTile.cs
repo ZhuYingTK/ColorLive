@@ -5,17 +5,15 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public partial class BoardTile : MonoBehaviour,IClickable
+public partial class BoardTile : MonoBehaviour
 {
     public CellEntity cellEntity;
     public Vector2Int pos;
 
-    private void Update()
+    public void OnUpdate(int deltaTurn)
     {
-        if (cellEntity != null)
-        {
-            cellEntity.OnUpdate(this, Time.deltaTime);
-        }
+        if(cellEntity == null) return;
+        cellEntity.OnUpdate(this,deltaTurn);
     }
 
     //点击事件

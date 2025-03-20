@@ -21,67 +21,67 @@ public class CellData
 {
     public eCellType type;
     public eEntityStatus status;
-    public float generateTime;
-    public float productTime;
-    public float dieTime;
+    public int generateTurns;
+    public int productTurns;
+    public int dieTurns;
     public int live;
 }
 
 public abstract class CellEntity : Entity
 {
     public abstract CellData data { get; set; }
-    private float currentGenerateTime = 0;
-    private float currentproductTime = 0;
-    private float currentdieTime = 0;
-    public float generateProgress => currentGenerateTime / data.generateTime;
-    public float productProgress => currentproductTime / data.productTime;
-    public float dieProgress => currentdieTime / data.dieTime;
+    private int currentGenerateTurns = 0;
+    private int currentproductTurns = 0;
+    private int currentdieTurns = 0;
+    public float generateProgress => (float)currentGenerateTurns / data.generateTurns;
+    public float productProgress => (float)currentproductTurns / data.productTurns;
+    public float dieProgress => (float)currentdieTurns / data.dieTurns;
 
-    public override void OnUpdate(BoardTile node, float deltaTime)
+    public override void OnUpdate(BoardTile node, int deltaTurn)
     {
         switch (data.status)
         {
             case eEntityStatus.Generating:
-                AddGenerateTime(node, deltaTime);
+                AddGenerateTurns(node, deltaTurn);
                 break;
             case eEntityStatus.Stable:
-                AddProducingTime(node, deltaTime);
+                AddProducingTurns(node, deltaTurn);
                 break;
             case eEntityStatus.Dying:
-                AddProducingTime(node, deltaTime);
-                AddDyingTime(node, deltaTime);
+                AddProducingTurns(node, deltaTurn);
+                AddDyingTurns(node, deltaTurn);
                 break;
         }
     }
 
-    protected virtual void AddGenerateTime(BoardTile node,float deltaTime)
+    protected virtual void AddGenerateTurns(BoardTile node,int deltaTurn)
     {
-        currentGenerateTime += deltaTime;
+        currentGenerateTurns += deltaTurn;
         if (generateProgress >= 1)
         {
-            currentGenerateTime = data.generateTime;
+            currentGenerateTurns = data.generateTurns;
             OnGenerate(node);
         }
         node.SetGenerateProgress(generateProgress);
     }
 
-    protected virtual void AddDyingTime(BoardTile node,float deltaTime)
+    protected virtual void AddDyingTurns(BoardTile node,int deltaTurn)
     {
-        currentdieTime += deltaTime;
+        currentdieTurns += deltaTurn;
         if (dieProgress >= 1)
         {
-            currentdieTime = data.dieTime;
+            currentdieTurns = data.dieTurns;
             OnDied(node);
         }
         node.SetDieProgress(dieProgress);
     }
     
-    protected virtual void AddProducingTime(BoardTile node,float deltaTime)
+    protected virtual void AddProducingTurns(BoardTile node,int deltaTurn)
     {
-        currentproductTime += deltaTime;
+        currentproductTurns += deltaTurn;
         if (productProgress >= 1)
         {
-            currentproductTime = 0;
+            currentproductTurns = 0;
             OnProduce();
         }
 
@@ -91,7 +91,7 @@ public abstract class CellEntity : Entity
     public virtual void OnStopDie(BoardTile node)
     {
         data.status = eEntityStatus.Stable;
-        currentdieTime = 0;
+        currentdieTurns = 0;
         node.SetDieProgress(dieProgress);
     }
     

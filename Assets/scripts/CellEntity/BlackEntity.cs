@@ -15,9 +15,9 @@ public class BlackEntity : CellEntity
     {
         data = new CellData()
         {
-            generateTime = GameManager.BlackTileData.generateTime,
-            productTime = GameManager.BlackTileData.productTime,
-            dieTime = GameManager.BlackTileData.dieTime,
+            generateTurns = GameManager.BlackTileData.generateTurns,
+            productTurns = GameManager.BlackTileData.productTurns,
+            dieTurns = GameManager.BlackTileData.dieTurns,
             live = GameManager.BlackTileData.live,
             type = eCellType.Black,
             status = status
@@ -27,9 +27,9 @@ public class BlackEntity : CellEntity
     {
         data = new CellData()
         {
-            generateTime = GameManager.BlackTileData.generateTime,
-            productTime = GameManager.BlackTileData.productTime,
-            dieTime = GameManager.BlackTileData.dieTime,
+            generateTurns = GameManager.BlackTileData.generateTurns,
+            productTurns = GameManager.BlackTileData.productTurns,
+            dieTurns = GameManager.BlackTileData.dieTurns,
             live = live,
             type = eCellType.Black,
             status = status

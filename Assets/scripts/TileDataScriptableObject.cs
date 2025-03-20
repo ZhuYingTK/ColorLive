@@ -6,8 +6,8 @@ using UnityEngine;
 public class TileDataScriptableObject : ScriptableObject
 {
     public eCellType type;
-    public float generateTime;
-    public float productTime;
-    public float dieTime;
+    public int generateTurns;
+    public int productTurns;
+    public int dieTurns;
     public int live;
 }

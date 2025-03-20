@@ -3,11 +3,24 @@ using UnityEngine;
 
 public class Chunk
 {
-    public const int ChunkSize = 16;
-    public const int MapChunkSize = 32;
+    public const int ChunkSize = 8;
+    public const int MapChunkSize = 64;
     private static Vector2Int chunkOffset => new Vector2Int(MapChunkSize / 2, MapChunkSize / 2);
     public Vector2Int pos;
-    
+
+    public BoardTile[] tiles = new BoardTile[ChunkSize * ChunkSize];
+    public bool isActive { get; private set; }
+
+    public void SetActive(bool active)
+    {
+        if(active == isActive) return;
+        isActive = active;
+        for (int i = 0; i < tiles.Length; i++)
+        {
+            tiles[i].gameObject.SetActive(active);
+        }
+    }
+
     public static Vector2Int WorldPosToChunkPos(Vector2 worldPos)
     {
         return TilePosToChunkPos(new Vector2Int((int)worldPos.x,(int)worldPos.y));

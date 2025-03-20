@@ -27,6 +27,11 @@ public class CameraManager : MonoBehaviour
 
     void Update()
     {
+        //暂停
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            BoardManager.Instance.stopUpdate = !BoardManager.Instance.stopUpdate;
+        }
         if (Input.GetMouseButtonDown(0) && !IsPointerOverUI())
         {
             // 记录初始屏幕坐标和相机位置
@@ -80,7 +85,15 @@ public class CameraManager : MonoBehaviour
 
     private void OnClick()
     {
-        
+        Collider2D[] col = Physics2D.OverlapPointAll(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        foreach (var result in col)
+        {
+            if (result.gameObject.TryGetComponent<BoardTile>(out var tile))
+            {
+                tile.OnClick();
+                return;
+            }
+        }
     }
     
     // 检测是否点击到UI元素（需引用 UnityEngine.EventSystems）

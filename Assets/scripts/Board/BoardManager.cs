@@ -15,8 +15,13 @@ public class BoardManager : MonoBehaviour
     public Transform BoardGameObject;
     public Board Board => board;
     private Board board;
+    private long _currentTurn;
+    private float updateTime = 1;
+    public bool stopUpdate = false;
+    private float currentTime;
     public void Awake()
     {
+        _currentTurn = 0;
         Instance = this;
         board = new Board();
     }
@@ -25,9 +30,23 @@ public class BoardManager : MonoBehaviour
     {
     }
 
+    public void Update()
+    {
+        if (!stopUpdate)
+        {
+            currentTime += Time.deltaTime;
+            if (currentTime > updateTime)
+            {
+                currentTime = 0;
+                board.Update(1);
+                _currentTurn++;
+            }
+        }
+    }
+
     public void RefreshChunk(Rect rect)
     {
-        board.SetChunkActivity(rect);
+        board.SetCameraChunkActivity(rect);
     }
     
     

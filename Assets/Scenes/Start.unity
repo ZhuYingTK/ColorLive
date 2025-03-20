@@ -833,6 +833,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BoardTile
       objectReference: {fileID: 0}
+    - target: {fileID: 4962953610096931940, guid: 8db4dcc49ebb9c54d9bec21d0dac7262,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8512714822119394272, guid: 8db4dcc49ebb9c54d9bec21d0dac7262,
         type: 3}
       propertyPath: m_LocalPosition.x
