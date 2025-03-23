@@ -10,4 +10,5 @@ public class TileDataScriptableObject : ScriptableObject
     public int productTurns;
     public int dieTurns;
     public int live;
+    public int viewDistance;
 }

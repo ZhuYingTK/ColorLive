@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -25,6 +26,7 @@ public class CellData
     public int productTurns;
     public int dieTurns;
     public int live;
+    public int viewDistance;
 }
 
 public abstract class CellEntity : Entity
@@ -36,8 +38,9 @@ public abstract class CellEntity : Entity
     public float generateProgress => (float)currentGenerateTurns / data.generateTurns;
     public float productProgress => (float)currentproductTurns / data.productTurns;
     public float dieProgress => (float)currentdieTurns / data.dieTurns;
+    public eEntityStatus status => data.status;
 
-    public override void OnUpdate(BoardTile node, int deltaTurn)
+    public override void Update(BoardTile node, int deltaTurn)
     {
         switch (data.status)
         {
@@ -54,13 +57,34 @@ public abstract class CellEntity : Entity
         }
     }
 
+    public virtual void CheckStatusByTile(BoardTile tile)
+    {
+        var neighbors = BoardManager.Instance.Board.GetTileNeighbors(tile);
+        var blackNeighbor = neighbors.Where(e => e.GetCellType() == eCellType.Black);
+        int count = blackNeighbor.Count();
+        if (count == 2 || count == 3)
+        {
+            if(status == eEntityStatus.Dying)
+                StopDie(tile);
+        }
+        else
+        {
+            StartDie(tile);
+        }
+
+        if (status == eEntityStatus.Generating && count != 3)
+        {
+            StopGenerate(tile);
+        }
+    }
+
     protected virtual void AddGenerateTurns(BoardTile node,int deltaTurn)
     {
         currentGenerateTurns += deltaTurn;
         if (generateProgress >= 1)
         {
             currentGenerateTurns = data.generateTurns;
-            OnGenerate(node);
+            Generate(node);
         }
         node.SetGenerateProgress(generateProgress);
     }
@@ -71,7 +95,7 @@ public abstract class CellEntity : Entity
         if (dieProgress >= 1)
         {
             currentdieTurns = data.dieTurns;
-            OnDied(node);
+            Died(node);
         }
         node.SetDieProgress(dieProgress);
     }
@@ -82,46 +106,62 @@ public abstract class CellEntity : Entity
         if (productProgress >= 1)
         {
             currentproductTurns = 0;
-            OnProduce();
+            Produce();
         }
 
         node.SetProduceProgress(productProgress);
     }
 
-    public virtual void OnStopDie(BoardTile node)
+    public virtual void StopDie(BoardTile node)
     {
         data.status = eEntityStatus.Stable;
         currentdieTurns = 0;
         node.SetDieProgress(dieProgress);
     }
     
-    public virtual void OnStartGenerate(BoardTile node)
+    public virtual void StartGenerate(BoardTile node)
     {
         data.status = eEntityStatus.Generating;
     }
 
-    public virtual void OnStopGenerate(BoardTile node)
+    public virtual void StopGenerate(BoardTile node)
     {
+        data.status = eEntityStatus.None;
         node.EntityDead();
     }
 
-    public virtual void OnGenerate(BoardTile node)
+    public virtual void Generate(BoardTile node)
     {
         data.status = eEntityStatus.Stable;
-        node.SetBody(GetCellType());
+        node.SetEntityView(GetCellType());
+        Spawned(node);
     }
 
-    public virtual void OnStartDie(BoardTile node)
+    public virtual void Spawned(BoardTile node)
+    {
+        var target = BoardManager.Instance.Board.GetTilesInDistance(node.pos,data.viewDistance);
+        for (int i = 0; i < target.Count; i++)
+        {
+            target[i].visibilityCount++;
+        }
+    }
+
+    public virtual void StartDie(BoardTile node)
     {
         data.status = eEntityStatus.Dying;
     }
 
-    public virtual void OnDied(BoardTile node)
+    public virtual void Died(BoardTile node)
     {
         node.EntityDead();
+        var target = BoardManager.Instance.Board.GetTilesInDistance(node.pos,data.viewDistance);
+        for (int i = 0; i < target.Count; i++)
+        {
+            target[i].visibilityCount--;
+        }
     }
 
-    public abstract void OnProduce();
+    public abstract void Produce();
 
     public eCellType GetCellType()
     {

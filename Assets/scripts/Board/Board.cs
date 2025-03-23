@@ -25,9 +25,10 @@ public partial class Board
             {
                 var list = GetTileNeighbors(tile);
                 var blackNeighbor = list.Where(e => e.GetCellType() == eCellType.Black);
-                if (blackNeighbor.Count() == 3)
+                BoardTile[] boardTiles = blackNeighbor as BoardTile[] ?? blackNeighbor.ToArray();
+                if (boardTiles.Length == 3)
                 {
-                    int live = blackNeighbor.Min(e => (int)e.GetCellLive()) - 1;
+                    int live = boardTiles.Min(e => (int)e.GetCellLive()) - 1;
                     if(live > 0) 
                         tile.GenerateCell(eCellType.Black,live);
                 }
@@ -36,16 +37,7 @@ public partial class Board
 
         foreach (var tile in TileList)
         {
-            if (tile.GetCellType() == eCellType.Black)
-            {
-                var list = GetTileNeighbors(tile);
-                var blackNeighbor = list.Where(e => e.GetCellType() == eCellType.Black);
-                int count = blackNeighbor.Count();
-                if (count != 2 && count != 3)
-                {
-                    tile.StartDie();
-                }
-            }
+            tile.CheckCellEntityStatusByTile(tile);
         }
         
         foreach (var tile in TileList)
@@ -61,6 +53,27 @@ public partial class Board
     public void AddTile(BoardTile tile)
     {
         this[tile.pos] = tile;
+    }
+
+    public List<BoardTile> GetTilesInDistance(Vector2Int pos, int distance)
+    {
+        List<BoardTile> results = new List<BoardTile>();
+        for (int dx = -distance; dx <= distance; dx++)
+        {
+            int remaining = distance - Mathf.Abs(dx);
+            
+            // 遍历对应x偏移量下的y偏移量范围
+            for (int dy = -remaining; dy <= remaining; dy++)
+            {
+                if(dx == 0 && dy == 0) continue;
+                int x = pos.x + dx;
+                int y = pos.y + dy;
+                if(this[x, y] == null)
+                    LoadChunkByTilePos(new Vector2Int(x, y));
+                results.Add(this[x, y]);
+            }
+        }
+        return results;
     }
     
     public List<BoardTile> GetTileNeighbors(BoardTile tile)
@@ -87,13 +100,20 @@ public partial class Board
     {
         return GenerateBoardTile(new Vector2Int(x, y));
     }
+    // ReSharper disable Unity.PerformanceAnalysis
     public static BoardTile GenerateBoardTile(Vector2Int pos)
     {
         var obj = GameObject.Instantiate(BoardManager.Instance.BoardTilePrefab, BoardManager.Instance.BoardGameObject);
         var tile = obj.GetComponent<BoardTile>();
         tile.pos = pos;
         obj.transform.position = new Vector3(pos.x, pos.y, 0);
+        tile.visibilityCount = IsOriginVisibleTile(pos) ? 1 : 0;
         return tile;
+    }
+
+    public static bool IsOriginVisibleTile(Vector2Int pos)
+    {
+        return pos.x is >= -1 and <= 1 && pos.y is >= -1 and <= 1;
     }
 
     #endregion

@@ -9,16 +9,28 @@ public partial class BoardTile : MonoBehaviour
 {
     public CellEntity cellEntity;
     public Vector2Int pos;
+    private int _visibilityCount;
+
+    public int visibilityCount
+    {
+        get => _visibilityCount;
+        set
+        {
+            _visibilityCount = value;
+            SetVisibilityView();
+        }
+    }
 
     public void OnUpdate(int deltaTurn)
     {
         if(cellEntity == null) return;
-        cellEntity.OnUpdate(this,deltaTurn);
+        cellEntity.Update(this,deltaTurn);
     }
 
     //点击事件
     public void OnClick()
     {
+        if(_visibilityCount == 0) return;
         if (cellEntity == null || cellEntity.data.status == eEntityStatus.Generating)
         {
             if (GameManager.Instance.blackRes >= BlackEntity.cost)
@@ -27,7 +39,9 @@ public partial class BoardTile : MonoBehaviour
                 GameManager.Instance.blackRes -= BlackEntity.cost;
                 liveText.text = cellEntity.data.live.ToString();
                 SetLiveText();
+                SetEntityView(cellEntity.GetCellType());
                 RefreshTileView();
+                cellEntity.Spawned(this);
             }
         }
     }
@@ -39,31 +53,22 @@ public partial class BoardTile : MonoBehaviour
         {
             case eCellType.Black:
                 cellEntity = new BlackEntity(live,status: eEntityStatus.Generating);
-                cellEntity.OnStartGenerate(this);
+                cellEntity.StartGenerate(this);
                 SetLiveText();
                 break;
         }
     }
 
-    public void StartDie()
+    public void CheckCellEntityStatusByTile(BoardTile tile)
     {
-        cellEntity.OnStartDie(this);
+        cellEntity?.CheckStatusByTile(tile);
     }
-
-    public void StopDie()
-    {
-        cellEntity.OnStopDie(this);
-    }
-
-    public void StopGenerate()
-    {
-        cellEntity.OnStopGenerate(this);
-    }
+    
 
     public void EntityDead()
     {
         cellEntity = null;
-        SetBody(eCellType.None);
+        SetEntityView(eCellType.None);
         RefreshTileView();
     }
 

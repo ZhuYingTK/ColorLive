@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: BlackCell
   m_EditorClassIdentifier: 
   type: 1
-  generateTime: 5
-  productTime: 2
-  dieTime: 4
+  generateTurns: 4
+  productTurns: 2
+  dieTurns: 4
   live: 5
+  viewDistance: 2

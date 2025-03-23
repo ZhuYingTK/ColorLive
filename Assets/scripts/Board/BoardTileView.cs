@@ -12,6 +12,9 @@ public partial class BoardTile
     public Image generateImg;
     public Image produceImg;
     public Image dieImg;
+
+    private GameObject _entityView;
+    private bool _isVisibility = false;
     public void RefreshTileView()
     {
         if (cellEntity == null)
@@ -26,7 +29,6 @@ public partial class BoardTile
             SetGenerateProgress(cellEntity.generateProgress);
             SetProduceProgress(cellEntity.productProgress);
             SetDieProgress(cellEntity.dieProgress);
-            SetBody(cellEntity.GetCellType());
         }
     }
     
@@ -52,16 +54,36 @@ public partial class BoardTile
         liveText.gameObject.SetActive(true);
     }
     
-    public void SetBody(eCellType type)
+    public void SetEntityView(eCellType type)
     {
         switch (type)
         {
             case eCellType.None:
-                body.color = Color.white;
+                if(_entityView != null)
+                    Destroy(_entityView);
                 break;
             case eCellType.Black:
-                body.color = Color.black;
+                GameObject blackEntity = Resources.Load<GameObject>("BlackEntity");
+                var obj =  Instantiate(blackEntity,transform);
+                _entityView = obj;
                 break;
+        }
+    }
+
+    private void SetVisibilityView()
+    {
+        if (_visibilityCount > 0)
+        {
+            if (!_isVisibility)
+            {
+                body.color = Color.white;
+                _isVisibility = true;
+            }
+        }
+        else
+        {
+            body.color = Color.gray;
+            _isVisibility = false;
         }
     }
 }

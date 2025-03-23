@@ -7,7 +7,7 @@ public enum eEntityType
 
 public abstract class Entity 
 {
-    public virtual void OnUpdate(BoardTile node, int deltaTurn)
+    public virtual void Update(BoardTile node, int deltaTurn)
     {
         
     }

@@ -6,7 +6,7 @@ public class BlackEntity : CellEntity
 {
     public static int cost = 1;
     public override CellData data { get; set; }
-    public override void OnProduce()
+    public override void Produce()
     {
         GameManager.Instance.blackRes++;
     }
@@ -20,6 +20,7 @@ public class BlackEntity : CellEntity
             dieTurns = GameManager.BlackTileData.dieTurns,
             live = GameManager.BlackTileData.live,
             type = eCellType.Black,
+            viewDistance = GameManager.BlackTileData.viewDistance,
             status = status
         };
     }
@@ -32,6 +33,7 @@ public class BlackEntity : CellEntity
             dieTurns = GameManager.BlackTileData.dieTurns,
             live = live,
             type = eCellType.Black,
+            viewDistance = GameManager.BlackTileData.viewDistance,
             status = status
         };
     }
