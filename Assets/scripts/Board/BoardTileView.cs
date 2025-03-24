@@ -23,6 +23,9 @@ public partial class BoardTile
             generateImg.gameObject.SetActive(false);
             produceImg.gameObject.SetActive(false);
             dieImg.gameObject.SetActive(false);
+            SetGenerateProgress(0);
+            SetProduceProgress(0);
+            SetDieProgress(0);
         }
         else
         {
@@ -61,6 +64,7 @@ public partial class BoardTile
             case eCellType.None:
                 if(_entityView != null)
                     Destroy(_entityView);
+                RefreshTileView();
                 break;
             case eCellType.Black:
                 GameObject blackEntity = Resources.Load<GameObject>("BlackEntity");

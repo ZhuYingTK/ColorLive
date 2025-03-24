@@ -48,7 +48,7 @@ public partial class BoardTile : MonoBehaviour
 
     public void GenerateCell(eCellType type,int live)
     {
-        if(cellEntity != null && cellEntity.data.status == eEntityStatus.Generating) return;
+        if(cellEntity != null) return;
         switch (type)
         {
             case eCellType.Black:
@@ -65,11 +65,10 @@ public partial class BoardTile : MonoBehaviour
     }
     
 
-    public void EntityDead()
+    public void EntityDestroy()
     {
         cellEntity = null;
         SetEntityView(eCellType.None);
-        RefreshTileView();
     }
 
     public eCellType GetCellType()

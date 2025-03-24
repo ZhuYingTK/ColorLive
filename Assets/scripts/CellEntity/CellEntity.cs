@@ -62,19 +62,21 @@ public abstract class CellEntity : Entity
         var neighbors = BoardManager.Instance.Board.GetTileNeighbors(tile);
         var blackNeighbor = neighbors.Where(e => e.GetCellType() == eCellType.Black);
         int count = blackNeighbor.Count();
+        
+        if (status == eEntityStatus.Generating && count != 3)
+        {
+            StopGenerate(tile);
+        }
+        
         if (count == 2 || count == 3)
         {
             if(status == eEntityStatus.Dying)
                 StopDie(tile);
         }
-        else
+        else 
         {
-            StartDie(tile);
-        }
-
-        if (status == eEntityStatus.Generating && count != 3)
-        {
-            StopGenerate(tile);
+            if(status == eEntityStatus.Stable) 
+                StartDie(tile);
         }
     }
 
@@ -114,6 +116,7 @@ public abstract class CellEntity : Entity
 
     public virtual void StopDie(BoardTile node)
     {
+        Debug.Log($"node:{node.pos} 终止死亡");
         data.status = eEntityStatus.Stable;
         currentdieTurns = 0;
         node.SetDieProgress(dieProgress);
@@ -121,17 +124,20 @@ public abstract class CellEntity : Entity
     
     public virtual void StartGenerate(BoardTile node)
     {
+        Debug.Log($"node:{node.pos} 开始生成");
         data.status = eEntityStatus.Generating;
     }
 
     public virtual void StopGenerate(BoardTile node)
     {
+        Debug.Log($"node:{node.pos} 终止生成");
         data.status = eEntityStatus.None;
-        node.EntityDead();
+        node.EntityDestroy();
     }
 
     public virtual void Generate(BoardTile node)
     {
+        Debug.Log($"node:{node.pos} 生成");
         data.status = eEntityStatus.Stable;
         node.SetEntityView(GetCellType());
         Spawned(node);
@@ -139,6 +145,7 @@ public abstract class CellEntity : Entity
 
     public virtual void Spawned(BoardTile node)
     {
+        Debug.Log($"node:{node.pos} 出现");
         var target = BoardManager.Instance.Board.GetTilesInDistance(node.pos,data.viewDistance);
         for (int i = 0; i < target.Count; i++)
         {
@@ -148,12 +155,14 @@ public abstract class CellEntity : Entity
 
     public virtual void StartDie(BoardTile node)
     {
+        Debug.Log($"node:{node.pos} 开始死亡");
         data.status = eEntityStatus.Dying;
     }
 
     public virtual void Died(BoardTile node)
     {
-        node.EntityDead();
+        Debug.Log($"node:{node.pos} 死亡");
+        node.EntityDestroy();
         var target = BoardManager.Instance.Board.GetTilesInDistance(node.pos,data.viewDistance);
         for (int i = 0; i < target.Count; i++)
         {
