@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,20 @@ public partial class Board
     private Dictionary<int, BoardTile> _tiles = new Dictionary<int, BoardTile>(capacity:100000);
     public IEnumerable<BoardTile> TileList => _tiles.Values;
 
+    public readonly Dictionary<eCellType, List<CellEntity>> CellEntitiesTypeDic =
+        new Dictionary<eCellType, List<CellEntity>>();
+
     public Board()
     {
         for (int i = 0; i < Chunk.MapChunkSize; i++)
         {
             _chunks[i] = new Chunk[Chunk.MapChunkSize];
+        }
+
+        foreach (eCellType cellType in Enum.GetValues(typeof(eCellType)))
+        {
+            // 为每个枚举值创建新的sResVO实例并添加到字典
+            CellEntitiesTypeDic.Add(cellType, new List<CellEntity>());
         }
     }
 
@@ -93,6 +103,17 @@ public partial class Board
         }
         return tileList;
     }
+    
+    public void AddCellEntity(CellEntity entity)
+    {
+        CellEntitiesTypeDic[entity.GetCellType()].Add(entity);
+    }
+
+    public void RemoveCellEntity(CellEntity entity)
+    {
+        CellEntitiesTypeDic[entity.GetCellType()].Remove(entity);
+    }
+
     
     #region 地块生成
 

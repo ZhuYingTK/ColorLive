@@ -26,10 +26,6 @@ public class BoardManager : MonoBehaviour
         board = new Board();
     }
 
-    public void Start()
-    {
-    }
-
     public void Update()
     {
         if (!stopUpdate)
@@ -43,7 +39,7 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
-
+    
     public void RefreshChunk(Rect rect)
     {
         board.SetCameraChunkActivity(rect);
