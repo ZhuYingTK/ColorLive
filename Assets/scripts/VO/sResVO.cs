@@ -12,12 +12,23 @@ public class sResVO
         foreach (eResType resType in Enum.GetValues(typeof(eResType)))
         {
             // 为每个枚举值创建新的sResVO实例并添加到字典
-            TypeDic.Add(resType, new sResVO());
+            TypeDic.Add(resType, new sResVO(resType,0));
         }
     }
+
+    public static readonly Dictionary<eResType, Color> ColorDic = new Dictionary<eResType, Color>()
+    {
+        { eResType.Black, Color.black }
+    };
     
     public eResType type;
     public int Count;
+
+    public sResVO(eResType type, int count)
+    {
+        this.type = type;
+        Count = count;
+    }
 }
 
 public enum eResType

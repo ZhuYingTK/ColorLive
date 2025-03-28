@@ -9,6 +9,12 @@ public class CostCard : MonoBehaviour
     public Image image;
     public TMP_Text countText;
 
+    public void Init(ResCostScritableObject resSO)
+    {
+        SetColor(sResVO.ColorDic[resSO.resType]);
+        SetCountText(resSO.Cost);
+    }
+
     public void SetColor(Color color)
     {
         image.color = color;

@@ -9,7 +9,7 @@ public class BlackEntity : CellEntity
     public override CellData data { get; set; }
     public override void Produce()
     {
-        GameManager.Instance.blackRes++;
+        sResVO.TypeDic[eResType.Black].Count++;
     }
 
     public override void CheckStatusByTile(BoardTile tile)
@@ -39,12 +39,12 @@ public class BlackEntity : CellEntity
     {
         data = new CellData()
         {
-            generateTurns = GameManager.BlackTileData.generateTurns,
-            productTurns = GameManager.BlackTileData.productTurns,
-            dieTurns = GameManager.BlackTileData.dieTurns,
-            live = GameManager.BlackTileData.live,
+            generateTurns = GameManager.BlackCellData.generateTurns,
+            productTurns = GameManager.BlackCellData.productTurns,
+            dieTurns = GameManager.BlackCellData.dieTurns,
+            live = GameManager.BlackCellData.live,
             type = eCellType.Black,
-            viewDistance = GameManager.BlackTileData.viewDistance,
+            viewDistance = GameManager.BlackCellData.viewDistance,
             status = status
         };
     }
@@ -52,12 +52,12 @@ public class BlackEntity : CellEntity
     {
         data = new CellData()
         {
-            generateTurns = GameManager.BlackTileData.generateTurns,
-            productTurns = GameManager.BlackTileData.productTurns,
-            dieTurns = GameManager.BlackTileData.dieTurns,
+            generateTurns = GameManager.BlackCellData.generateTurns,
+            productTurns = GameManager.BlackCellData.productTurns,
+            dieTurns = GameManager.BlackCellData.dieTurns,
             live = live,
             type = eCellType.Black,
-            viewDistance = GameManager.BlackTileData.viewDistance,
+            viewDistance = GameManager.BlackCellData.viewDistance,
             status = status
         };
     }

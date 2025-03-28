@@ -9,23 +9,11 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public int blackRes
-    {
-        set
-        {
-            _blackRes = value;
-            blackResText.SetText(_blackRes.ToString());
-        }
-        get => _blackRes;
-    }
-    private int _blackRes = 1;
-    public TMP_Text blackResText;
-
     public void Awake()
     {
         Instance = this;
-        BlackTileData = AssetDatabase.LoadAssetAtPath<TileDataScriptableObject>("Assets/DataRes/BlackCell.asset");
+        BlackCellData = AssetDatabase.LoadAssetAtPath<CellDataScriptableObject>("Assets/DataRes/BlackCell.asset");
     }
 
-    public static TileDataScriptableObject BlackTileData { get; private set; }
+    public static CellDataScriptableObject BlackCellData { get; private set; }
 }

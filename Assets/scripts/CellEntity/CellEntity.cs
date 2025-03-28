@@ -7,7 +7,7 @@ using UnityEngine;
 public enum eCellType
 {
     None,
-    Black
+    Black,
 }
 
 public enum eEntityStatus

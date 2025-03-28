@@ -33,16 +33,6 @@ public partial class BoardTile : MonoBehaviour
         if(_visibilityCount == 0) return;
         if (cellEntity == null || cellEntity.data.status == eEntityStatus.Generating)
         {
-            if (GameManager.Instance.blackRes >= BlackEntity.cost)
-            {
-                cellEntity = new BlackEntity(status:eEntityStatus.Stable);
-                GameManager.Instance.blackRes -= BlackEntity.cost;
-                liveText.text = cellEntity.data.live.ToString();
-                SetLiveText();
-                SetEntityView(cellEntity.GetCellType());
-                RefreshTileView();
-                cellEntity.Spawned(this);
-            }
         }
     }
 
